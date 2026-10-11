@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cartaz para impressão – Conselho Tutelar</title>
+  <meta name="robots" content="noindex">
+  <style>
+    @page { size: A4 portrait; margin: 12mm; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, "Segoe UI", Roboto, Arial, sans-serif; color: #0a2540; background: #ffffff; }
+    .cartaz {
+      width: 186mm; min-height: 270mm; margin: 0 auto; overflow: hidden;
+      border: 1.5mm solid #0b4f8a; border-radius: 8mm;
+      display: flex; flex-direction: column; text-align: center;
+      -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    }
+    .topo { padding: 12mm 12mm 10mm; background: linear-gradient(135deg, #0b4f8a 0%, #0e7c66 100%); color: #ffffff; }
+    .selo { display: inline-flex; align-items: center; justify-content: center; width: 18mm; height: 18mm; margin-bottom: 5mm; border-radius: 5mm; background: #ffffff; color: #0b4f8a; }
+    .selo svg { width: 11mm; height: 11mm; fill: currentColor; }
+    h1 { margin: 0; font-size: 30pt; line-height: 1.12; letter-spacing: -0.02em; }
+    .sub { margin: 4mm 0 0; font-size: 15pt; opacity: 0.95; }
+    .meio { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6mm; padding: 10mm 12mm; }
+    .moldura { padding: 5mm; border: 0.8mm solid #c3cfdd; border-radius: 6mm; background: #ffffff; }
+    .qr { display: block; width: 100mm; height: 100mm; image-rendering: pixelated; }
+    .chamada { margin: 0; font-size: 26pt; font-weight: 800; color: #146c43; }
+    .rodape { padding: 7mm 12mm 9mm; border-top: 0.4mm solid #e2e8f0; background: #f5f8fc; }
+    .emergencia { margin: 0 0 3mm; font-size: 14pt; }
+    .projeto { margin: 0; font-size: 10pt; color: #475467; }
+    .instrucao { max-width: 186mm; margin: 8mm auto; padding: 4mm 5mm; border: 1px dashed #5c4400; border-radius: 3mm; background: #fff3bf; color: #5c4400; font-size: 11pt; }
+    .qr-pendente { max-width: 100mm; padding: 10mm; color: #475467; font-size: 14pt; }
+    .endereco-site { overflow-wrap: anywhere; font-size: 10pt; color: #475467; }
+    [hidden] { display: none !important; }
+    @media print { .instrucao { display: none; } }
+  </style>
+</head>
+<body>
+  <p class="instrucao">Antes de imprimir: gere o QR code com <code>python ferramentas/gerar_qrcode.py ENDEREÇO-DO-SITE</code>. Depois imprima esta página em A4 (Ctrl+P), sem cabeçalhos e rodapés do navegador e com “Gráficos de fundo” ligado. Este aviso não sai na impressão.</p>
+  <main class="cartaz">
+    <div class="topo">
+      <span class="selo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2 3 6v6c0 5 3.8 9.3 9 10 5.2-.7 9-5 9-10V6l-9-4Zm0 5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Zm-4.5 10c.5-2.3 2.3-3.5 4.5-3.5s4 1.2 4.5 3.5h-9Z"/></svg></span>
+      <h1>Conselho Tutelar:<br>saiba quando e como procurar</h1>
+      <p class="sub">Informação simples para famílias e professores</p>
+    </div>
+    <div class="meio">
+      <div class="moldura">
+        <img class="qr" id="qr-cartaz" alt="QR code que abre o site sobre o Conselho Tutelar" hidden>
+        <p class="qr-pendente" id="qr-pendente">QR Code ainda não configurado. Publique o site e gere o código com o endereço confirmado antes de imprimir este cartaz.</p>
+      </div>
+      <p class="chamada" id="qr-chamada" hidden>Aponte a câmera do celular</p>
+      <p class="endereco-site" id="endereco-site" hidden></p>
+    </div>
+    <div class="rodape">
+      <p class="emergencia">Em perigo agora? Ligue <strong>190</strong>. Denúncia gratuita e sem se identificar: <strong>Disque 100</strong>.</p>
+      <p class="projeto">Projeto de extensão · Análise e Desenvolvimento de Sistemas · UNIASSELVI</p>
+    </div>
+  </main>
+<script src="assets/qrcode-config.js"></script>
+  <script>
+    (function () {
+      if (!window.QRCODE_URL) return;
+      var img = document.getElementById('qr-cartaz');
+      img.onload = function () {
+        img.hidden = false;
+        document.getElementById('qr-pendente').hidden = true;
+        document.getElementById('qr-chamada').hidden = false;
+      };
+      img.onerror = function () { img.hidden = true; };
+      // A imagem só é criada depois de confirmar o endereço de publicação.
+      img.src = 'assets/qrcode.png';
+      var p = document.getElementById('endereco-site');
+      p.textContent = window.QRCODE_URL;
+      p.hidden = false;
+    })();
+  </script>
+</body>
+</html>

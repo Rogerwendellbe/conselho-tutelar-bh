@@ -1,0 +1,1 @@
+window.QRCODE_URL = "";
